@@ -1,0 +1,18 @@
+body {
+    height: 100vh;
+    display: grid;
+    place-items: center;
+}
+
+#board {
+    height: 70vh;
+    width: 70vw;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(100px, 1fr));
+   grid-template-rows: repeat(3, minmax(100px, 1fr));
+    gap: 5px;
+}
+
+.field {
+    background: pink;
+}
