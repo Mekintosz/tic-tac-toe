@@ -26,7 +26,7 @@ const gameBoard = (() => {
         moveDisplay.classList.add(move)
         e.target.append(moveDisplay)
         whoseMove()
-        display.textContent = "it is now" + move + "'s move"
+        display.textContent = "it is now " + move + "'s move"
         e.target.removeEventListener("click", addMove)
     }
 
