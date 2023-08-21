@@ -10,7 +10,7 @@ const gameBoard = (() => {
     const board = document.querySelector("#board")
     const display = document.querySelector("#info")
     display.textContent = "Cross goes first."
-    const setBoard = function (){
+    const setBoard = () => {
         start.forEach((_cell, index) => {
         const cellElement = document.createElement("div")
         cellElement.classList.add("square")
@@ -25,13 +25,39 @@ const gameBoard = (() => {
         moveDisplay = document.createElement("div")
         moveDisplay.classList.add(move)
         e.target.append(moveDisplay)
+        checkScore()
         whoseMove()
         display.textContent = "it is now " + move + "'s move"
         e.target.removeEventListener("click", addMove)
     }
+    
+    let whoseMove = () => {move = move === "cross" ? "circle" : "cross"}
+                        
 
-    whoseMove = () => {move = move === "cross" ? "circle" : "cross"}
+    const checkScore = () => {
+        const allSquares = document.querySelectorAll(".square")
+        const winMatch = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
+                          [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                          [0, 4, 8], [3, 5, 7]]
+        
+        winMatch.forEach(match => {
+           const crossWin = match.every(cell => 
+                allSquares[cell].firstChild?.classList.contains("cross"))
+
+                if (crossWin) {
+                    display.textContent = `Cross's win!`
+                    allSquares.forEach(square => square.replaceWith(square.cloneNode(true)))
+                   return
+                }
+        })
+
+        
+    }
+
     return {getBoard, setBoard}
+
+   
+
 })();
 
 gameBoard.setBoard();
