@@ -7,30 +7,52 @@ const gameBoard = (() => {
     return {board, display}
 })();
 
+// const players = () => {
+
+//     return {player1, player2}
+// }
+
+
+
+const Player = (name, sign) => {
+    let getName = () => name
+    let getSign = () => sign
+    return {getName, getSign}
+}       
+
+const player1 = Player("Mike", "cross")
+const player2 = Player("Alona", "circle")
+
+const currentPlayer = (() => {
+    let currPlayer = player1
+    let setCurrentPlayer = () => {
+        currPlayer = currPlayer === player1 ? player2 : player1
+    }
+    let getCurrentPlayer = () => currPlayer
+
+    return {setCurrentPlayer, getCurrentPlayer}
+})()
+
+
 const theMoves = (() => {
 
-    let current = {move: "cross",
-                    get move() {
-                                return this.move},
-                    set move(value) {
-                        this.move = value
-                    }}
-    
     const addMove = (e) => {
         moveDisplay = document.createElement("div")
-        moveDisplay.classList.add(move)
+        moveDisplay.classList.add(currentPlayer.getCurrentPlayer().getSign())
         e.target.append(moveDisplay)
-        checkScore()
-        if ( gameBoard.display.textContent == `${theMoves.move}'s win!`) 
-            return
-        whoseMove()
-        gameBoard.display.textContent = "it is now " + move + "'s move"
         e.target.removeEventListener("click", addMove)
+        checkScore()
+        nextPlayer()
     }
-    
-    const whoseMove = () => {move = move === "cross" ? "circle" : "cross"}
-                        
-    return {addMove, move}
+
+    const nextPlayer = () => {
+        if ( gameBoard.display.textContent == `${currentPlayer.getCurrentPlayer().getName()} wins!`) 
+            return
+        currentPlayer.setCurrentPlayer()
+        gameBoard.display.textContent = "it is now " + currentPlayer.getCurrentPlayer().getName() + "'s move"
+    }
+ 
+    return {addMove, nextPlayer}
 })()
 
 const setBoard = (() => {
@@ -39,14 +61,10 @@ const setBoard = (() => {
     const cellElement = document.createElement("div")
     cellElement.classList.add("square")
     cellElement.id = index
-    cellElement.addEventListener("click", theMoves.addMove)
+    cellElement.addEventListener("click", theMoves.addMove, theMoves.nextPlayer)
     gameBoard.board.append(cellElement)
     })
 })();
-
-
-
-
 
 const checkScore = () => {
     const allSquares = document.querySelectorAll(".square")
@@ -56,14 +74,12 @@ const checkScore = () => {
     
     for (let match of winMatch) {
        let win = match.every(cell => 
-            allSquares[cell].firstChild?.classList.contains(theMoves.move))
+            allSquares[cell].firstChild?.classList.contains(currentPlayer.getCurrentPlayer().getSign()))
 
             if (win) {
-                gameBoard.display.textContent = `${theMoves.move}'s win!`
+                gameBoard.display.textContent = `${currentPlayer.getCurrentPlayer().getName()} wins!`
                 allSquares.forEach(square => square.replaceWith(square.cloneNode(true)))
                 return
-
             }
-    
     }
 }
