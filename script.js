@@ -77,12 +77,6 @@ const checkScore = () => {
     [2, 4, 6],
   ];
 
-  // for (let node of allSquares) {
-  //   if (node.firstChild?.classList.contains("cross" || "circle")) {
-  //     gameBoard.display.textContent = "It is draw."
-  //   }
-  // }
-  
   for (let match of winMatch) {
     let win = match.every((cell) =>
       allSquares[cell].firstChild?.classList.contains(
