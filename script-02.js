@@ -69,9 +69,50 @@ return { castMark, getCurrentPlayer, checkForWinner, checkForDraw, switchCurrent
 })();
 
 const displayController = (() => {
-    const board = document.querySelector("#board");
-  const display = document.querySelector("#info");
-  display.textContent = "Cross goes first.";
+
+        const board = document.querySelector("#board");
+
+        const updateBoard = (e) => {
+            gameFlow.updateBoard(e);
+            markDisplay = document.createElement("div");
+            markDisplay.classList.add(gameController.getCurrentPlayer().getMark());
+            e.target.append(markDisplay);
+            e.target.removeEventListener("click", updateBoard);
+        };
+
+        gameBoard.getBoard().forEach((_cell, index) => {
+
+            const cellElement = document.createElement("div");
+            cellElement.classList.add("square");
+            cellElement.id = index;
+            cellElement.addEventListener(
+              "click", updateBoard,
+            );
+
+            board.append(cellElement);
+        });
+        
+    const infoDisplayController = () => {
+
+    const display = document.querySelector("#info");
+
+    display.textContent = "Cross goes first.";
+    }
+
 })();
 
+const gameFlow = (() => {
 
+    const updateBoard = (e) => {
+        gameBoard.setMark(e.target.id, gameController.getCurrentPlayer().getMark());
+
+   const updateDisplay = () => {
+    if (gameController.checkForWinner) {
+        
+    }
+
+    }
+
+return { updateBoard }
+
+})();
