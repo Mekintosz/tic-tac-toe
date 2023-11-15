@@ -1,20 +1,14 @@
 const gameBoard = (() => {
 
-    let board = ["X", "", "", "", "X", "", "", "", "X"];
+    let board = ["", "", "", "", "", "", "", "", ""];
 
     const getBoard = () => board;
     
-    const setMark = (index, mark) => {
-        return board[index] = mark;
-    };
+    const setMark = (index, mark) => board[index] = mark;
 
-    const getMark = (index) => {
-        return board[index];
-    };
+    const getMark = (index) => board[index];
 
-    const resetBoard = () => {
-        board.fill("", 0, 9)
-    };
+    const resetBoard = () => board.fill("", 0, 9);
 
 return { getBoard, setMark, getMark, resetBoard };
 
@@ -23,21 +17,23 @@ return { getBoard, setMark, getMark, resetBoard };
 const Player = (name, mark) => {
 
     let getName = () => name;
+
     let getMark = () => mark;
 
     return { getName, getMark };
 };
 
-const gameController = (() => {
+const player1 = Player("mmmmm", "X");
+const player2 = Player("dhdshe", "O");
 
-    const player1 = Player("", "X");
-    const player2 = Player("", "O");
+const gameController = (() => {
 
     let currentPlayer = player1;
 
     const getCurrentPlayer = () => currentPlayer;
-    const setCurrentPlayer = () => {
-        currentPlayer = currentPlayer == player1 ? player2 : player1;
+
+    const switchCurrentPlayer = () => {
+        currentPlayer = currentPlayer === player1 ? player2 : player1;
     };
 
     const castMark = (indexToMark) => {
@@ -61,16 +57,21 @@ const gameController = (() => {
             let foundWinner = winingSequence.every( index => gameBoard.getBoard()[index] === getCurrentPlayer().getMark() )
            
             if (foundWinner) return true
+            else return false;
         }
 
     }
 
-    const checkForDraw = () => getBoard().every( index => index ==! "" )
+    const checkForDraw = () => gameBoard.getBoard().every( index => index !== "" );
 
-return { castMark, checkForWinner }
+return { castMark, getCurrentPlayer, checkForWinner, checkForDraw, switchCurrentPlayer }
 
 })();
 
-console.log(gameBoard.getBoard());
-console.log(gameBoard.resetBoard());
-console.log(gameBoard.getBoard());
+const displayController = (() => {
+    const board = document.querySelector("#board");
+  const display = document.querySelector("#info");
+  display.textContent = "Cross goes first.";
+})();
+
+
