@@ -23,18 +23,24 @@ const Player = (name, mark) => {
     return { getName, getMark };
 };
 
-const player1 = Player("mmmmm", "X");
-const player2 = Player("dhdshe", "O");
+
 
 const gameController = (() => {
 
+    const player1 = Player(window.prompt("What is players X name?", "Robert"), "X");
+    const player2 = Player(window.prompt("What is players O name?", "Jessica"), "O");
     let currentPlayer = player1;
 
-    const getCurrentPlayer = () => currentPlayer;
+    const currentPlayerController = () => {
 
-    const switchCurrentPlayer = () => {
-        currentPlayer = currentPlayer === player1 ? player2 : player1;
-    };
+        const getCurrentPlayer = () => currentPlayer;
+
+        const switchCurrentPlayer = () => {
+            currentPlayer = currentPlayer === player1 ? player2 : player1;
+        };
+
+        return { getCurrentPlayer, switchCurrentPlayer }
+    }
 
     const castMark = (indexToMark) => {
         gameBoard.setMark(indexToMark, currentPlayer.getMark());
@@ -54,7 +60,7 @@ const gameController = (() => {
         ];
         
         for (let winingSequence of winningCombinations) {
-            let foundWinner = winingSequence.every( index => gameBoard.getBoard()[index] === getCurrentPlayer().getMark() )
+            let foundWinner = winingSequence.every( index => gameBoard.getBoard()[index] === currentPlayerController().getCurrentPlayer().getMark() )
            
             if (foundWinner) return true
             else return false;
@@ -64,20 +70,52 @@ const gameController = (() => {
 
     const checkForDraw = () => gameBoard.getBoard().every( index => index !== "" );
 
-return { castMark, getCurrentPlayer, checkForWinner, checkForDraw, switchCurrentPlayer }
+return { castMark, currentPlayerController, checkForWinner, checkForDraw }
 
 })();
 
+
+
 const displayController = (() => {
+
+    const infoDisplayController = () => {
+
+        const display = document.querySelector("#info");
+    
+        const  setDisplayText = text => display.textContent = text
+    
+        return { setDisplayText }
+    }
+
+    infoDisplayController().setDisplayText(`${gameController.currentPlayerController().getCurrentPlayer().getName()} starts the game`);
+
+    const updateDisplayPlayer = () => infoDisplayController().setDisplayText(`${gameController.currentPlayerController().getCurrentPlayer().getName()} move next`);
+
+    const updateDisplayWinner = () => infoDisplayController().setDisplayText(`${gameController.currentPlayerController().getCurrentPlayer().getName()} WINS the game!!!`);
+
+    const updateDisplayDraw = () => infoDisplayController().setDisplayText("OXO DRAW XOX");
 
         const board = document.querySelector("#board");
 
         const updateBoard = (e) => {
-            gameFlow.updateBoard(e);
+            gameBoard.setMark(e.target.id, gameController.currentPlayerController().getCurrentPlayer().getMark());
+            if (gameController.checkForWinner()) {
+                updateDisplayWinner();
+            } else if (gameController.checkForDraw()) {
+                updateDisplayDraw();
+            } else {
+                gameController.currentPlayerController().switchCurrentPlayer();
+                updateDisplayPlayer();
+            }
+            
+        };
+
+        const markField = (e) => {
             markDisplay = document.createElement("div");
-            markDisplay.classList.add(gameController.getCurrentPlayer().getMark());
+            markDisplay.classList.add(gameController.currentPlayerController().getCurrentPlayer().getMark());
             e.target.append(markDisplay);
-            e.target.removeEventListener("click", updateBoard);
+            e.target.removeEventListener("click", markField);
+            updateBoard(e);
         };
 
         gameBoard.getBoard().forEach((_cell, index) => {
@@ -86,33 +124,15 @@ const displayController = (() => {
             cellElement.classList.add("square");
             cellElement.id = index;
             cellElement.addEventListener(
-              "click", updateBoard,
+              "click", markField,
             );
 
             board.append(cellElement);
         });
         
-    const infoDisplayController = () => {
+   
 
-    const display = document.querySelector("#info");
+    
 
-    display.textContent = "Cross goes first.";
-    }
-
-})();
-
-const gameFlow = (() => {
-
-    const updateBoard = (e) => {
-        gameBoard.setMark(e.target.id, gameController.getCurrentPlayer().getMark());
-
-   const updateDisplay = () => {
-    if (gameController.checkForWinner) {
-        
-    }
-
-    }
-
-return { updateBoard }
 
 })();
