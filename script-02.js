@@ -140,11 +140,26 @@ const displayController = (() => {
     updateBoard(e);
   };
 
-  gameBoard.getBoard().forEach((_cell, index) => {
+  const removeFields = () => {
+  const fields = document.querySelector("#board");
+  fields.replaceChildren();
+  }
+
+  const resetButton = document.querySelector("#reset-button");
+  resetButton.addEventListener("click", (e) => {
+    gameBoard.resetBoard();
+    removeFields();
+    setBoard();
+  });
+
+  const setBoard = () => {
+    gameBoard.getBoard().forEach((_cell, index) => {
     const cellElement = document.createElement("div");
     cellElement.classList.add("square");
     cellElement.id = index;
     cellElement.addEventListener("click", markField);
     board.append(cellElement);
-  });
+    });
+  };
+  setBoard();
 })();
