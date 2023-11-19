@@ -4,7 +4,7 @@ body {
     height: 100vh;
     display: grid;
     place-items: center;
-    background-color: gray;
+    background-color: rgb(193, 227, 195);
 }
 
 #board {
